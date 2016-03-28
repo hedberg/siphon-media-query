@@ -13,14 +13,22 @@ module.exports = function(input, query) {
   var output = [];
   var rules = parse(input).stylesheet.rules;
   var all = query ? false : true;
+  var reverse = (query === 'no_media');
 
   // Iterate through every rule found in the CSS
   for (var i in rules) {
     var rule = rules[i];
 
-    // Only add the rule to the list if it's a @media rule, and if it's the matching rule. Or, add it if no specific media query was specified
-    if (rule.type === 'media' && (rule.media === query || all)) {
-      output.push(rule);
+    if (reverse === true) {
+      // Exclude media queries
+      if (rule.type != 'media') {
+        output.push(rule);
+      }
+    } else {
+      // Only add the rule to the list if it's a @media rule, and if it's the matching rule. Or, add it if no specific media query was specified
+      if (rule.type === 'media' && (rule.media === query || all)) {
+        output.push(rule);
+      }
     }
   }
 
